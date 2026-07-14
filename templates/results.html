@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Screening Results</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h2 class="text-center">
+                AI Resume Screening Results
+            </h2>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+
+                <a href="/" class="btn btn-primary">
+                    Upload More Resumes
+                </a>
+
+                <a href="/export/excel" class="btn btn-success">
+                    Download Excel Report
+                </a>
+
+                <a href="/export/pdf" class="btn btn-danger">
+                    Download PDF Report
+                </a>
+
+            </div>
+
+            <table class="table table-bordered table-striped table-hover">
+
+                <thead class="table-dark">
+
+                <tr>
+                    <th>Rank</th>
+                    <th>Candidate</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Skills</th>
+                    <th>Match Score</th>
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for candidate in results %}
+
+                <tr>
+
+                    <td>{{ loop.index }}</td>
+
+                    <td>{{ candidate.name }}</td>
+
+                    <td>{{ candidate.email }}</td>
+
+                    <td>{{ candidate.phone }}</td>
+
+                    <td>
+
+                        {% if candidate.skills %}
+
+                            {{ candidate.skills | join(', ') }}
+
+                        {% else %}
+
+                            No Skills Found
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge bg-success fs-6">
+                            {{ candidate.score }}%
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
