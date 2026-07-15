@@ -1,7 +1,7 @@
 from backend.resume_parser import extract_text
 from backend.information_extractor import extract_information
 from backend.matcher import calculate_match
-from backend.semantic_matcher import semantic_match
+
 from backend.skill_gap import find_missing_skills
 from backend.export_excel import export_to_excel
 from backend.export_pdf import export_to_pdf
@@ -178,7 +178,7 @@ def upload_resume():
 
         text = extract_text(filepath)
         info = extract_information(text)
-        score = semantic_match(text, job_description)
+        score = calculate_match(text, job_description)
 
         save_candidate(
           file.filename,
