@@ -32,7 +32,7 @@ def save_candidate(name, email, phone, skills, score):
 
     cursor.execute("""
     INSERT INTO candidates(name,email,phone,skills,score,status)
-    VALUES(?,?,?,?,?)
+    VALUES(?,?,?,?,?,?)
     """, (
         name,
         email,
