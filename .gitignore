@@ -7,3 +7,5 @@ Candidate_Report.xlsx
 
 __pycache__/
 *.pyc
+
+database/resume_screening.db
