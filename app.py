@@ -43,46 +43,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def home():
     return render_template("index.html")
 
-@app.route("/dashboard")
-@login_required
-def dashboard():
-
-    search = request.args.get("search", "")
-    min_score = request.args.get("min_score", "")
-    skill = request.args.get("skill", "")
-    sort = request.args.get("sort", "score")
-
-    candidates = get_all_candidates()
-
-    if search:
-        candidates = [
-            c for c in candidates
-            if search.lower() in c["name"].lower()
-        ]
-
-    if min_score:
-        candidates = [
-            c for c in candidates
-            if c["score"] >= float(min_score)
-        ]
-
-    if skill:
-        candidates = [
-            c for c in candidates
-            if skill.lower() in c["skills"].lower()
-        ]
-
-    if sort == "score":
-        candidates.sort(key=lambda x: x["score"], reverse=True)
-
-    elif sort == "name":
-        candidates.sort(key=lambda x: x["name"])
-
-    return render_template(
-        "dashboard.html",
-        candidates=candidates
-    )
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
 
@@ -154,6 +114,46 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("login"))
+
+@app.route("/dashboard")
+@login_required
+def dashboard():
+
+    search = request.args.get("search", "")
+    min_score = request.args.get("min_score", "")
+    skill = request.args.get("skill", "")
+    sort = request.args.get("sort", "score")
+
+    candidates = get_all_candidates()
+
+    if search:
+        candidates = [
+            c for c in candidates
+            if search.lower() in c["name"].lower()
+        ]
+
+    if min_score:
+        candidates = [
+            c for c in candidates
+            if c["score"] >= float(min_score)
+        ]
+
+    if skill:
+        candidates = [
+            c for c in candidates
+            if skill.lower() in c["skills"].lower()
+        ]
+
+    if sort == "score":
+        candidates.sort(key=lambda x: x["score"], reverse=True)
+
+    elif sort == "name":
+        candidates.sort(key=lambda x: x["name"])
+
+    return render_template(
+        "dashboard.html",
+        candidates=candidates
+    )
 
 @app.route("/upload", methods=["POST"])
 @login_required
