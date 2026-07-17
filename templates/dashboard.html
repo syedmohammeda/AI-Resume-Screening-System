@@ -3,187 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recruiter Dashboard</title>
+    <title>AI Resume Screening Dashboard</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background:#f4f4f4;
+            margin:0;
+            padding:20px;
+        }
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        h1{
+            text-align:center;
+            color:#333;
+        }
+
+        .menu{
+            text-align:center;
+            margin:20px 0;
+        }
+
+        .menu a{
+            text-decoration:none;
+            padding:10px 18px;
+            margin:5px;
+            background:#007bff;
+            color:white;
+            border-radius:5px;
+        }
+
+        .menu a:hover{
+            background:#0056b3;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th,td{
+            border:1px solid #ddd;
+            padding:10px;
+            text-align:center;
+        }
+
+        th{
+            background:#007bff;
+            color:white;
+        }
+
+        tr:nth-child(even){
+            background:#f2f2f2;
+        }
+
+        .shortlist-btn{
+            margin-top:15px;
+            padding:10px 20px;
+            background:green;
+            color:white;
+            border:none;
+            cursor:pointer;
+            border-radius:5px;
+        }
+    </style>
 </head>
+<body>
 
-<body class="bg-light">
+<h1>AI Resume Screening Dashboard</h1>
 
-<nav class="navbar navbar-dark bg-primary">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            AI Resume Screening System
-        </a>
-
-        <a href="/logout" class="btn btn-light">
-            Logout
-        </a>
-    </div>
-</nav>
-
-<div class="container mt-4">
-
-    <h2 class="mb-4">Recruiter Dashboard</h2>
-
-    <form method="GET" action="/dashboard" class="row g-3 mb-4">
-
-        <div class="col-md-4">
-            <input
-                type="text"
-                name="search"
-                class="form-control"
-                placeholder="Search Candidate">
-        </div>
-
-        <div class="col-md-2">
-            <input
-                type="number"
-                name="min_score"
-                class="form-control"
-                placeholder="Min Score">
-        </div>
-
-        <div class="col-md-3">
-            <input
-                type="text"
-                name="skill"
-                class="form-control"
-                placeholder="Skill">
-        </div>
-
-        <div class="col-md-2">
-            <select
-                name="sort"
-                class="form-select">
-
-                <option value="score">
-                    Highest Score
-                </option>
-
-                <option value="name">
-                    Candidate Name
-                </option>
-
-            </select>
-        </div>
-
-        <div class="col-md-1">
-            <button class="btn btn-primary w-100">
-                Search
-            </button>
-        </div>
-
-    </form>
-
-    <form action="/shortlist" method="POST">
-
-        <table class="table table-bordered table-hover bg-white">
-
-            <thead class="table-dark">
-
-            <tr>
-
-                <th>Select</th>
-
-                <th>Rank</th>
-
-                <th>Name</th>
-
-                <th>Email</th>
-
-                <th>Phone</th>
-
-                <th>Skills</th>
-
-                <th>Match Score</th>
-
-                <th>Status</th>
-
-            </tr>
-
-            </thead>
-
-            <tbody>
-
-            {% for candidate in candidates %}
-
-            <tr>
-
-                <td>
-                    <input
-                        type="checkbox"
-                        name="candidate_ids"
-                        value="{{ candidate.id }}">
-                </td>
-
-                <td>{{ loop.index }}</td>
-
-                <td>{{ candidate.name }}</td>
-
-                <td>{{ candidate.email }}</td>
-
-                <td>{{ candidate.phone }}</td>
-
-                <td>{{ candidate.skills }}</td>
-
-                <td>
-                    <span class="badge bg-success">
-                        {{ candidate.score }}%
-                    </span>
-                </td>
-
-                <td>
-
-                   {% if candidate.status == "Shortlisted" %}
-                     <span class="badge bg-success">
-                      Shortlisted
-                     </span>
-
-                   {% elif candidate.status == "Pending" %}
-                     <span class="badge bg-warning text-dark">
-                      Pending
-                     </span>
-
-                   {% elif candidate.status == "Rejected" %}
-                     <span class="badge bg-danger">
-                      Rejected
-                     </span>
-
-                   {% elif candidate.status == "Interview Scheduled" %}
-                     <span class="badge bg-primary">
-                      Interview Scheduled
-                     </span>
-
-                   {% else %}
-                     <span class="badge bg-secondary">
-                      Unknown
-                     </span>
-
-                   {% endif %}
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-            </tbody>
-
-        </table>
-
-        <button
-            type="submit"
-            class="btn btn-success">
-
-            Shortlist Selected
-
-        </button>
-
-    </form>
-
+<div class="menu">
+    <a href="{{ url_for('upload') }}">Upload Resume</a>
+    <a href="{{ url_for('analytics') }}">Analytics</a>
+    <a href="{{ url_for('export_excel') }}">Export Excel</a>
+    <a href="{{ url_for('export_pdf_route') }}">Export PDF</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<form method="POST" action="{{ url_for('shortlist') }}">
+<table>
+    <tr>
+        <th>Select</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Skills</th>
+        <th>Score</th>
+        <th>Status</th>
+    </tr>
+
+    {% for candidate in candidates %}
+    <tr>
+        <td>
+            <input type="checkbox" name="candidate_ids" value="{{ candidate.id }}">
+        </td>
+        <td>{{ candidate.name }}</td>
+        <td>{{ candidate.email }}</td>
+        <td>{{ candidate.phone }}</td>
+        <td>{{ candidate.skills }}</td>
+        <td>{{ candidate.score }}%</td>
+        <td>{{ candidate.status }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+<br>
+
+<center>
+    <button class="shortlist-btn" type="submit">
+        Shortlist Selected Candidates
+    </button>
+</center>
+
+</form>
 
 </body>
 </html>

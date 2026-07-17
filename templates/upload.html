@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Resumes</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background:#f4f7fc;
+            margin:0;
+            padding:0;
+        }
+
+        .container{
+            width:600px;
+            margin:50px auto;
+            background:#fff;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 0 10px rgba(0,0,0,0.2);
+        }
+
+        h1{
+            text-align:center;
+            color:#007bff;
+        }
+
+        label{
+            font-weight:bold;
+        }
+
+        textarea,
+        input[type=file]{
+            width:100%;
+            margin-top:8px;
+            margin-bottom:20px;
+            padding:10px;
+            border:1px solid #ccc;
+            border-radius:5px;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            background:#007bff;
+            color:white;
+            border:none;
+            border-radius:5px;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#0056b3;
+        }
+
+        .back{
+            text-align:center;
+            margin-top:20px;
+        }
+
+        .back a{
+            text-decoration:none;
+            color:#007bff;
+            font-weight:bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>AI Resume Screening System</h1>
+
+    <form action="{{ url_for('upload_resume') }}" method="POST" enctype="multipart/form-data">
+
+        <label>Job Description</label>
+
+        <textarea
+            name="job_description"
+            rows="8"
+            placeholder="Paste the job description here..."
+            required></textarea>
+
+        <label>Select Resume(s)</label>
+
+        <input
+            type="file"
+            name="resumes"
+            accept=".pdf,.doc,.docx"
+            multiple
+            required>
+
+        <button type="submit">
+            Upload & Analyze
+        </button>
+
+    </form>
+
+    <div class="back">
+        <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+    </div>
+
+</div>
+
+</body>
+</html>

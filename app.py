@@ -41,7 +41,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("login.html")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -155,50 +155,58 @@ def dashboard():
         candidates=candidates
     )
 
+@app.route("/upload", methods=["GET"])
+@login_required
+def upload():
+    return render_template("upload.html")
+
 @app.route("/upload", methods=["POST"])
 @login_required
 def upload_resume():
 
     if "resumes" not in request.files:
         return "No file selected"
-    
-    job_description = request.form["job_description"]
 
+    job_description = request.form["job_description"]
     files = request.files.getlist("resumes")
 
     results = []
 
     for file in files:
-        
+
         if file.filename == "":
             continue
-    
+
         filepath = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
         file.save(filepath)
 
         text = extract_text(filepath)
+        print("========== RESUME TEXT ==========")
+        print(text)
+        print("=================================")
         info = extract_information(text)
         score = calculate_match(text, job_description)
 
         save_candidate(
-          file.filename,
-          info["Email"],
-          info["Phone"],
-          info["Skills"],
-          score
+            file.filename,
+            info["Email"],
+            info["Phone"],
+            info["Skills"],
+            score
         )
 
         results.append({
-          "name": file.filename,
-          "score": score,
-          "email": info["Email"],
-          "phone": info["Phone"],
-          "skills": info["Skills"]
+            "name": file.filename,
+            "score": score,
+            "email": info["Email"],
+            "phone": info["Phone"],
+            "skills": info["Skills"],
+            "status": "pending"
         })
-    
-    results.sort(key=lambda x:x["score"],reverse=True)
 
-    return render_template("result.html",results=results)
+    results.sort(key=lambda x: x["score"], reverse=True)
+
+    return render_template("result.html", results=results)
 
 @app.route("/analytics")
 @login_required
