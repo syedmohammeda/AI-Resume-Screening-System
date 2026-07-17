@@ -1,4 +1,9 @@
-venv/
+.venv/
+
+resumes/
+
+Candidate_Report.pdf
+Candidate_Report.xlsx
+
 __pycache__/
-.env
-*.db
+*.pyc
